@@ -3,6 +3,9 @@ products:
   - id: o4zjlnwqwe0dzitl
     manufacturer: Tera
     model: 22kW 32A 3 phase
+  - id: y1aaoebcwzy0jvy3
+    manufacturer: Tera
+    model: 22kW 32A 3 phase
 entities:
   - entity: sensor
     translation_key: status
@@ -197,6 +200,48 @@ entities:
       - id: 10  # fault
         type: bitfield
         name: fault_code
+      - id: 10  # fault
+        type: bitfield
+        name: description
+        mapping:
+          - dps_val: 0
+            value: ok
+          - dps_val: 1
+            value: Over current
+          - dps_val: 2
+            value: Over current 2
+          - dps_val: 4
+            value: Over voltage
+          - dps_val: 8
+            value: Under voltage
+          - dps_val: 16
+            value: Contactor adhesion
+          - dps_val: 32
+            value: Contactor fault
+          - dps_val: 64
+            value: Earth fault
+          - dps_val: 128
+            value: Meter hardware fault
+          - dps_val: 256
+            value: Emergency stop
+          - dps_val: 512
+            value: CP fault
+          - dps_val: 1024
+            value: Meter communication fault
+          - dps_val: 2048
+            value: Card reader fault
+          - dps_val: 4096
+            value: Short circuit
+          - dps_val: 8192
+            value: Adhesion fault
+          - dps_val: 16384
+            value: Self test fault
+          - dps_val: 32768
+            value: Leakage current
+      - id: 120  # error_data
+        type: string
+        optional: true
+        name: error_data
   - entity: sensor
     name: Connection
     icon: "mdi:ev-plug-type2"
@@ -268,3 +313,90 @@ entities:
         range:
           min: 0
           max: 12
+  - entity: sensor
+    translation_key: time_remaining
+    class: duration
+    category: diagnostic
+    dps:
+      - id: 103  # Residual_delaytime
+        type: integer
+        name: sensor
+        optional: true
+        unit: min
+  - entity: sensor
+    name: Charging duration
+    class: duration
+    icon: "mdi:timer-outline"
+    dps:
+      - id: 104  # charger_time
+        type: integer
+        name: sensor
+        optional: true
+        unit: min
+        class: measurement
+  - entity: switch
+    name: Plug and charge
+    icon: "mdi:flash"
+    category: config
+    dps:
+      - id: 105  # quick_start, inverted: false = start charging on plug-in
+        type: boolean
+        name: switch
+        optional: true
+        mapping:
+          - dps_val: true
+            value: false
+          - dps_val: false
+            value: true
+  - entity: sensor
+    name: Session energy
+    class: energy
+    icon: "mdi:battery-charging"
+    dps:
+      - id: 106  # charge_capacity
+        type: integer
+        name: sensor
+        optional: true
+        unit: kWh
+        class: total_increasing
+        mapping:
+          - scale: 100
+  - entity: select
+    translation_key: temperature_unit
+    category: config
+    dps:
+      - id: 109  # temp_switch
+        type: string
+        name: option
+        optional: true
+        mapping:
+          - dps_val: temC
+            value: celsius
+          - dps_val: temF
+            value: fahrenheit
+  - entity: sensor
+    name: CP voltage
+    class: voltage
+    category: diagnostic
+    dps:
+      - id: 121  # cp_data
+        type: integer
+        name: sensor
+        optional: true
+        unit: V
+        class: measurement
+        mapping:
+          - scale: 1000
+  - entity: button
+    name: Refresh
+    icon: "mdi:refresh"
+    category: config
+    dps:
+      - id: 27  # online_state, sending "online" requests a full status update
+        type: string
+        optional: true
+        name: button
+        mapping:
+          - dps_val: online
+            value: true
+          - value: false
